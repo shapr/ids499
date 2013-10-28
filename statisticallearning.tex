@@ -46,9 +46,10 @@ particular topic.
 While searching Google can be fun, sometimes too much time is spent trying to find relevant information, or
 irrelevant search results become distrating from the actual
 
-Up to now statistical classifiers have primarily been used to automatically categorize items based on a user's
-feedback. In fact, this is how most spam filters function. Since each person will consider different messages
-to be useful content, and so each person must give their own feedback to the filter.
+Up to now statistical classifiers such as Bayesian statistics have primarily been used to automatically
+categorize items based on a user's feedback. In fact, this is how most spam filters function. Since each
+person will consider different messages to be useful content, and so each person must give their own feedback
+to the filter.
 
 Services such as Netflix and Amazon use similar software to suggest movies or books according to which movies
 or books the user has already enjoyed.
@@ -75,34 +76,175 @@ recommendations are done with software that has determined important features of
 available, and has some way to figure out which books or movies are similar to which other books or
 movies. \cite{michie1994machine}
 
-Statistical classifiers are divided into two major types, linear classifiers and 
+Statistical classifiers are divided into two major types, linear classifiers and non-linear classifiers.
 \subsection{Linear Classifiers}
+%This section will describe the simplest instance of linear statistical classifiers, Naive Bayesian
 Linear classifiers are called linear because, given a set of points drawn in a two dimensional space, the
 classifier finds a line that divides the space into two halves where one side of the line is one category, and
 the other side of the line is the other.\\
 % center this? XXX
 \includegraphics[scale=.4,natwidth=628,natheight=600]{svm_separating_hyperplanes.png}\\
-This section will describe the simplest instance of linear statistical classifiers, Naive Bayesian
-Classifiers. \cite{kononenko1991semi}
+
+The most popular linear classifier is the Naive Bayesian classifier. \cite{kononenko1991semi}
+We will describe the use of a Naive Bayesian Classifier for classification of email into so called ham and
+spam messages. Spam is common jargon used to describe unwanted email, most often containing advertising or
+some other attempt to extract money from the recipient of that email. Ham is a lesser known word that
+describes a message that has actual content that the user wishes to receive.
+
+In summary, each word in an email has a particular positive or negative value associated with it from earlier
+training. These values are added together, and the resulting sum is compared against user-specified
+thresholds. If the value is greater than the ham threshold, the message is considered content and displayed to
+the user. If the value is less than the spam threshold, the message is considered spam and is sent to a spam
+folder on the user's email system.
+
+Obviously when a user is first added to an email system, they cannot have given any input to the system, and
+thus the training values are empty, and all messages are considered ham. The most popular user interface
+approach is to add a button that allows a user to classify any message as spam. When that happens for the very
+first time, the software changes the values of all the words in the message to a negative value. After that
+very first input of training data, any message that contains words that were found in the spam message will be
+marked as spam. 
+
+On the other side of the problem, the user has the ability to view the spam folder and mark any of those
+messages as ham. At that point, it is almost certain that some words will have appeared in both the ham and
+spam categories. 
+
+This leads to an interesting problem. How can we determine what new value should be given to a word that has
+appeared once in a ham message, once in a spam message, and then user input tells us that the word has
+appeared once again in a spam message?
+
+The Reverend Thomas Bayes was both a Presbyterian minister and a mathematician, and his research into what was
+then called inverse probability became Bayes theorem. The idea of inverse probability started out with the
+question: given an urn containing a certain number of black and white balls, what is the probability of
+drawing one particular color of ball? Then, once a ball of a black or white ball has been removed, what is the
+new probability of drawing out a ball of a particular color? This sort of question applies directly to the
+spam classification problem, since it requires that we calculate the probability that a word will be in a spam
+message based on a combination of the number of times it has been found in spam and ham messages.
+
+% http://en.wikipedia.org/wiki/Bayes'_theorem#Events
+$$P(A|B)= \dfrac{P(B|A)P(A)}{P(B)}$$
+
+% We shall use $P(S)$ to denote the probability that a word will be found in a spam message, and $P(H)$ to
+% denote the probability that a word will be found in a ham message. $P(B|A)$, or
+This form of Bayes' Theorem requires that we know the prior probability that a word will be in a spam
+message, and given a fixed event such as a word being marked spam, will give us the new probability of that
+word being found in a spam message. This new probability is called the posterior probability. 
+
+In the case where a word has appeared once as ham and once as spam, the prior probability is .5, or 50\%. 
+$$P(W) = .5$$
+The probability of a message being spam is denoted as $P(S)$, and the probability of a message being ham is
+$P(H)$. Both of these are calculated putting all the probability values of all the words in a message into
+Bayes' Theorem.
+
+In probability, the likelihood of one event $B$ happening after an event $A$ has happened is denoted as
+$P(B|A)$. We will be using this to figure out the probability that a message is spam once we know the chance
+that a particular word is found in a spam message, denoted as $P(M|W)$.
+
+We calculate the total probability that a message is spam by combining all of the individual probabilities.
+In the equation below, $p_{1}$ is the probability that the first word is spam, $p_{2}$ is the probability that
+the second word is spam, and so on until word $n$.
+$$p=\dfrac{p_{1}p_{2} ... p_{n}}{p_{1}p_{2} ... p_{n} + (1-p_{1})(1-p_{2}) ... (1-p_{n})}$$
+
+% http://en.wikipedia.org/wiki/Bayesian_spam_filtering#Computing_the_probability_that_a_message_containing_a_given_word_is_spam
+
+% Once the word has been marked a second time as spam, we can fill in the values and calculate the new
+% probability. Since this word has been marked as spam, the probability of this event is 100\% and $P(W)$ is 1.
+% $$P(M|W) = \dfrac{P(M|W)P(W)}{1}$$
+% Thus, the new probability of this particular word being found in a spam message is
+
+\subsection{Non-Linear Classifiers}
+Non-linear classifiers are described as such because they are able to separate points into multiple regions
+rather than only being able to divide a cloud of points into two parts. This is useful when multiple the
+inputs need to be divided into multiple categories.
 \subsection{Support Vector Machines}
-This section will describe the nonlinear statistical classifier that will be used in this software
-prototype. \cite{hearst1998support}
+% http://www.youtube.com/watch?v=qyyJKd-zXRE andrew ng's video from the stanford course on machine learning
+Bayesian classifiers are easy to understand both from the mathematical and implementation viewpoints, but are
+less effective than non-linear classifiers. Non-linear classifiers such as neural networks are effective, but
+do not produce knowledge that can be used outside of the neural network.  Support vector machines have the
+great benefit that they are effective for two or many more categories, they are mathematically simple, and the
+result of their training can be extracted and used for other purposes. \cite{hearst1998support} In addition,
+support vector machines look for the largest margins between groupings of points, and thus automatically
+produce classifiers that can be applied to new inputs as well as determining what features are unique to each
+grouping.
+
+Support vector machines can be equivalent to machine learning done with several other types of classifiers
+such as polynomial classifiers, radial basis functions, and neural networks. \cite{hearst1998support}
 \subsection{Others}
 This section will cover the range of other statistical classifiers in less detail.
 \section{Common uses of Statistical Classifiers}
 \subsection{Spam Filters}
-This will describe how statistical classifiers are used in spam filters. \cite{androutsopoulos2000evaluation}
+Naive Bayesian spam filtering has had much been the subject of many research papers. It is perhaps
+unsurprising that this linear classifier gives decent but not spectacular performance.  Bayesian spam filters
+have been found to require continuous training in order to achieve good results, but have also found to be
+imperfect even after thorough training on large collections of messages. Thus Bayesian spam filters are only
+sufficient when backed up with other approaches.  \cite{androutsopoulos2000evaluation}
 \subsection{Natural Language Guessing}
-This will describe how statistical classifiers are used in guessing \cite{martins2005language}
-the natural language used in a document.
-\subsection{Topic Categorization}
-This will describe how statistical classifiers are used to automatically choose a category for text
-content. \cite{pang2002thumbs}
+% This will describe how statistical classifiers are used in guessing the natural language used in a document.
+If you've navigated your web browser to a web page written in a language other than your native language,
+you've probably seen a small popup offer to translate from the language of the web page into your native
+language. But how can computers discover the language of the document without asking the user?
+
+Originally, software looked for characters or words that are unique to a particular language, but effective
+language guessing software now looks for particular sequences of letters called n-grams. An n-gram is a
+contiguous string of characters of length n. This works well on short snippets of text that may not exhibit
+any words or characters unique to the language used, and is fast and easy to implement. This also gives this
+approach a tolerance to errors in spelling or grammar. Unsurprisingly, this approach cannot differentiate
+between very similar languages such as American English and British English. \cite{martins2005language}
+\subsection{Sentiment Classification}
+While most of machine learning focuses on categorization by topic, there are other interesting uses for these
+algorithms.  Sentiment classification is used to attempt to extract the emotional content for a particular
+piece of text. This has been used for many diverse purposes, from attempting to predict the outcome of an
+election to attempting to predict the relative market share of different mobile devices.
+
+This kind of classification is especially interesting to web sites that aggregate information from other
+websites. One good example is the movie reviews from the website \url{rottentomatoes.com}, which attempts to
+give an average rating to a movie by combining many reviews written by other people. \cite{pang2002thumbs}
+
+While many features of documents can be easily extracted, emotional content is often subtle. A sentence as
+simple as ``How could you think that?'' has no explicitly emotional words, but is obviously a negative
+statement towards the previous statement. The most common approach to extracting emotional content has been to
+first find words with explicit positive or negative content, and then find which words are most often
+associated with those words. For example ``good'' or ``great'' may often be associated with positive
+sentiments, but ``spectacular'' could just as easily be associated with ``failure'' or ``flop'' as
+``success''.
+
+Unsurprisingly, the Naive Bayes model is good, but not spectacular. The maximum entropy approach has better
+results, but support vector machines do a better job than either of the two earlier algorithms. This supports
+the choice of this project to use support vector machines for the prototype.
 \subsection{Malware Detection}
-This will describe how statistical classifiers are used to detect malware on computers.\\ \cite{perdisci2008mcboost}
+Most virus scanner are only able to detect a computer virus or other malware once it has been discovered and
+dissected by a human. At that point the features unique to that virus are then added to the virus scanner
+database.  This process would be much simplified if computers were able to recognize unknown viruses either by
+behavior or by examining a program before execution.
+
+Existing research has used an n-gram approach similar to the language guessing approach described
+earlier. While this is effective, most malware is transmitted in a compressed format. Unsurprisingly, guessing
+the safety of an executable inside a zip file is just as difficult as guessing the language of a text file
+inside a zip file.  
+
+More recent systems have added the ability to recognize compressed files and decompress them before examining
+them for malicious intent, and have reported success rates up to 87.3\%. \cite{perdisci2008mcboost}
 \subsection{Movie and Book Recommendations}
 This will describe how statistical classifiers are used to recommend movies \cite{basu1998recommendation} and
 books \cite{linden2003amazon} based on the movies or books previously enjoyed by a user.
+
+Amazon.com has an unusual problem in that they have a very large number of products, and a varying amount of
+data for each user. New customers will have a very few purchases on their account, while long time customers
+could have many thousands of purchases. How can large amounts of both user and product information be
+processed, and yet recommendations returned in a very short amount of time?
+
+One common approach is called collaborative filtering, where the purchases of the logged-in user are searched
+to find other people who have bought those same items, and the other people's purchases are searched to find
+items that the logged-in user has not yet purchased. The idea here is that people make similar purchases, and
+once buying one item, they may be interested in items that other people purchased along with that item.
+Collaborative filtering can lead to wildly varying results, and thus other approaches have been added.
+
+Cluster models attempt to find similar users and group them together, and then recommend any items that are
+popular in the cluster, but have not yet been purchased by the user. This approach requires less computation
+time, and thus can respond in a smaller amount of time, but the quality of the recommendations is low.
+
+Another approach is to examine the search history of the users, any items in which they have expressed
+explicit interest but have not purchased are safe to recommend. But this approach breaks down for users with
+many thousands of purchases.
 \section{Existing Tools}
 \subsection{Google Prediction API}
 This will describe the Google Prediction API. \cite{GooglePrediction:2013:Online}
@@ -146,7 +288,7 @@ This section will consider options such as a Firefox Extension or a
 Chrome Plugin so that setup will only require clicking.
 \pagebreak{}
 \bibliographystyle{apalike} 
-\bibliography{outline}
+\bibliography{statisticallearning}
 \end{document}
 
 % LocalWords: LocalWords differentiable
