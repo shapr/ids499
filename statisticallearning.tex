@@ -76,6 +76,8 @@ recommendations are done with software that has determined important features of
 available, and has some way to figure out which books or movies are similar to which other books or
 movies. \cite{michie1994machine}
 
+
+
 Statistical classifiers are divided into two major types, linear classifiers and non-linear classifiers.
 \subsection{Linear Classifiers}
 %This section will describe the simplest instance of linear statistical classifiers, Naive Bayesian
@@ -144,6 +146,9 @@ In the equation below, $p_{1}$ is the probability that the first word is spam, $
 the second word is spam, and so on until word $n$.
 $$p=\dfrac{p_{1}p_{2} ... p_{n}}{p_{1}p_{2} ... p_{n} + (1-p_{1})(1-p_{2}) ... (1-p_{n})}$$
 
+Where $p$ is the overall probability that a message is spam, given $p_{1}$, the probability that the first
+word will be found in a spam message, and $p_{2}$, the probability that the second word will be found in a
+spam message, and so on up to the last word in the message.
 % http://en.wikipedia.org/wiki/Bayesian_spam_filtering#Computing_the_probability_that_a_message_containing_a_given_word_is_spam
 
 % Once the word has been marked a second time as spam, we can fill in the values and calculate the new
@@ -154,7 +159,16 @@ $$p=\dfrac{p_{1}p_{2} ... p_{n}}{p_{1}p_{2} ... p_{n} + (1-p_{1})(1-p_{2}) ... (
 \subsection{Non-Linear Classifiers}
 Non-linear classifiers are described as such because they are able to separate points into multiple regions
 rather than only being able to divide a cloud of points into two parts. This is useful when multiple the
-inputs need to be divided into multiple categories.
+inputs need to be divided into multiple categories. 
+\subsection{Others}
+% XXX put something about the others here?
+% This section will cover the range of other statistical classifiers in less detail.
+The first linear classifiers were described in 1936. \cite{fisher1936use} As mentioned earlier, they could
+only find a single line across a plane to divide many points into two groups.  In 1962, the first research on
+neural networks was published. Each neuron in a neural network was a separate linear classifier, giving them
+the ability to combine multiple separate group divisions into a piece wise linear separation. In the mid 1980s
+the back propagation algorithm was discovered that allowed errors in classification to be propagated backwards
+through the network to change the value for each separate node in the network. \cite{cortes1995support}
 \subsection{Support Vector Machines}
 % http://www.youtube.com/watch?v=qyyJKd-zXRE andrew ng's video from the stanford course on machine learning
 Bayesian classifiers are easy to understand both from the mathematical and implementation viewpoints, but are
@@ -164,12 +178,18 @@ great benefit that they are effective for two or many more categories, they are 
 result of their training can be extracted and used for other purposes. \cite{hearst1998support} In addition,
 support vector machines look for the largest margins between groupings of points, and thus automatically
 produce classifiers that can be applied to new inputs as well as determining what features are unique to each
-grouping.
+grouping. Part of the improvement found with support vector machines comes from their use of linear
+classifiers after a non-linear remapping of the data. \cite{cortes1995support}
+
+While earlier classifiers have concentrated on the contributing values for each point of data, the support
+vector machine instead searches for the most widely separated values, as those will most often denote a group
+of data points separate from other groups. This also requires far less computation than other algorithms.
 
 Support vector machines can be equivalent to machine learning done with several other types of classifiers
 such as polynomial classifiers, radial basis functions, and neural networks. \cite{hearst1998support}
-\subsection{Others}
-This section will cover the range of other statistical classifiers in less detail.
+
+% XXX lots more content could go here
+
 \section{Common uses of Statistical Classifiers}
 \subsection{Spam Filters}
 Naive Bayesian spam filtering has had much been the subject of many research papers. It is perhaps
@@ -245,48 +265,81 @@ time, and thus can respond in a smaller amount of time, but the quality of the r
 Another approach is to examine the search history of the users, any items in which they have expressed
 explicit interest but have not purchased are safe to recommend. But this approach breaks down for users with
 many thousands of purchases.
+
+% XXX could puff up this section easily
 \section{Existing Tools}
 \subsection{Google Prediction API}
-This will describe the Google Prediction API. \cite{GooglePrediction:2013:Online}
+Google has written large pieces of software designed to predict other items of interest to a particular
+user. They allow the public to use this software as well. Small amounts of use is free, and a large amount of
+use unsurprisingly costs money. \cite{GooglePrediction:2013:Online}
+
+The Google Prediction API explicitly lists such feature as
+\begin{itemize}
+\item predict what other movies or products a user might like
+\item Categorize emails as spam or non-spam
+\item Analyze posted comments about your product for positive or negative sentiment
+\item Guess how much money a user might spend on a given day, given that user's past history
+\end{itemize}
+
+If this software prototype successfully gains users willing to pay money, Google's Prediction API is likely
+the most cost-effective way to calculate recommendations on a large scale.
 \subsection{NLTK}
-This will describe the Natural Language Toolkit library. \cite{NLTK:2013:Online}
+For personal use on a user's computer, the open source Natural Language Tool Kit handles many tasks involved
+in automated processing of natural language, and also provides a book that describes how to use NLTK for
+common natural language tasks. This library is most likely the easiest way to implement the prototype
+software. \cite{NLTK:2013:Online}
 \section{Proposed Software}
 \subsection{Transparent Proxy}
-This will describe the use of a transparent proxy to capture the text
-of the webpages that the user views.
+The transparent proxy will run on the local machine and will capture all web pages read by the user. Each web
+page will be divided up into unique words found in the page, and a default score of zero relevance will be
+given to each word found.
 \subsection{Statistical Classifier}
-This will describe populating the statistical classifier from the text
-of the viewed webpages.
+As described earlier, the software will be using a support vector machine to find the most specific
+classification for each search term discovered by the transparent proxy.
 \subsection{Predictive Model}
-This will describe how the classifier can be used to find new and
-interesting results for the user.
+This will describe how the classifier can be used to find new and interesting results for the user.
 \subsection{User Interface}
-This will describe the web based front end for the system, including
-how the user will train the software.
+The user will have a small web server running locally and be able to navigate to the suggestions interface
+running on this local web server. The user will examine recommended web pages and give them a thumbs up or a
+thumbs down depending on their perceived relevance. The thumbs up button will reinforce the search terms used
+to discover this web page, and the thumbs down button will discourage the search terms used to discover the
+recommended web page.
 \section{Possible Uses}
 \subsection{Personal and Corporate Research}
-Once trained for a particular subject, this software could run in the
-background looking for new results, much like a news feed.
+Once trained for a particular subject, this software could run in the background looking for new results, much
+like a news feed. In this case, the subject could be anything from new developments in solar power to
+interesting discussions on effective mulching of grass cuttings. Any user just learning a new subject would
+benefit from this sort of background agent doing the hard work required to find websites relevant to their new interest.
 \subsection{Research Paper Analysis}
-If a user has a large collection of research papers and would like to
-pick out which papers may be relevant, the software could discover this.
+If a user has a large collection of research papers and would like to pick out which papers may be relevant to
+their current interests, the software could discover this. Even better, the software could be pointed at a
+large online repository of research papers such as JSTOR and instead pick out papers that may be surprisingly
+relevant to the user's research.
 \section{Future Directions}
 \subsection{Overfocus Prevention}
-One of the problems with statistical classifiers is that they can be
-over trained and end up limiting the results, thus missing results the
-user may not yet know they wish to see.
-This section will describe possible strategies for resolving that
-issue.
+One of the problems with statistical classifiers is that they can be over trained and end up limiting the
+results, thus missing results the user may not yet know they wish to see.  This section describes several
+possible strategies for resolving that issue, including injecting top results from other users and randomly
+decreasing the score for the top search terms for a user.
+
+The psychology term ``groupthink'' has made its way into the management world and describes a group of people
+where the process of making a decision involves a lack of creative conflict and a lack of search for untried
+solutions. This same process occurs in machine learning contexts when a learning system becomes
+over-trained. In such situations, new results are almost never found because the system is stuck in a rut, as
+it were. One way to solves this is to randomize the values of just a few parts of the state of the
+algorithm. This allows the search to escape its backwater and discover new and better results.  Over time,
+humans will change their interests, and the world will continue to change, thus even theoretically ``best''
+search results will be entirely different a year later.  Thus, the system must have some way to slowly expire
+the oldest training values. This feature will also help prevent stagnation of the training values.
 \subsection{Multiuser}
-One of the best ways to inject new results into an over trained system
-may be to import the best results from other users who have agreed to
-share their results.
+One of the best ways to inject new results into an over-trained system may be to import the best results from
+other users who have agreed to share their results.
 \subsection{Ease of Use}
-The current design for the software requires the user to have a
-transparent proxy configured in the web browser.
-This section will consider options such as a Firefox Extension or a
-Chrome Plugin so that setup will only require clicking.
-\pagebreak{}
+The current design for the software requires the user to have a transparent proxy configured in the web
+browser.  Many web requests made by a browser will be irrelevant to the software, but will still be captured. 
+Later iteration of this design would investigate writings plugins specific to Mozilla Firefox or Google Chrome
+in order to only capture relevant content, and in order to simplify setup of the software.
+\pagebreak{} 
 \bibliographystyle{apalike} 
 \bibliography{statisticallearning}
 \end{document}
