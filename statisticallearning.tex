@@ -8,12 +8,12 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage[margin=1in]{geometry}
-% \usepackage{apacite}
 \usepackage{color}
-%\usepackage{sagetex}
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{setspace}
+\usepackage[explicit]{titlesec}
+\usepackage[normalem]{ulem}
 \doublespacing{}
 \pagestyle{fancy}
 \lhead{\footnotesize Outline for IDS499 final project}
@@ -21,8 +21,21 @@
 
 \author{Shae Matijs Erisson\\Interdisciplinary Studies Department\\University of North Alabama}
 \title{Statistical Learning for User-Specific Webpage Recommendations}
-\begin{document}
 \date{October 12 2013}
+
+%% trying to get sections to not be numbered
+\setcounter{secnumdepth}{0} % this actually works!
+
+%% trying to get subsections to be underlined, it works!
+\titleformat{\subsection}
+  {\normalfont\Large\sffamily\bfseries\filcenter}{}{0em}{\uline{\thesection}}
+\titleformat{name=\subsection,numberless}
+  {\normalfont\bfseries}{}{0em}{\uline{#1}}
+
+\renewcommand*{\thesection}{\Roman{section}}
+
+
+\begin{document}
 \maketitle{}
 \pagebreak{}
 %\section*{Statistical Learning for User-Specific Webpage Recommendations}
@@ -72,7 +85,7 @@ existing content. The project consists of both prototype software and a report d
 % The software will watch the user browsing the web and uses that input to build Bayesian statistics for later
 % searching for new documents of interest.
 \section{Statistical Classifiers}
-% This section will give an overview of statistical classifiers. 
+% This section will give an overview of statistical classifiers.
 
 The goal of a classifier is to sort inputs into different categories based on features of those inputs. The
 most familiar examples would be book recommendations from Amazon and movie recommendations from Netflix. Those
@@ -108,11 +121,11 @@ thus the training values are empty, and all messages are considered ham. The mos
 approach is to add a button that allows a user to classify any message as spam. When that happens for the very
 first time, the software changes the values of all the words in the message to a negative value. After that
 very first input of training data, any message that contains words that were found in the spam message will be
-marked as spam. 
+marked as spam.
 
 On the other side of the problem, the user has the ability to view the spam folder and mark any of those
 messages as ham. At that point, it is almost certain that some words will have appeared in both the ham and
-spam categories. 
+spam categories.
 
 This leads to an interesting problem. How can we determine what new value should be given to a word that has
 appeared once in a ham message, once in a spam message, and then user input tells us that the word has
@@ -133,9 +146,9 @@ $$P(A|B)= \dfrac{P(B|A)P(A)}{P(B)}$$
 % denote the probability that a word will be found in a ham message. $P(B|A)$, or
 This form of Bayes' Theorem requires that we know the prior probability that a word will be in a spam
 message, and given a fixed event such as a word being marked spam, will give us the new probability of that
-word being found in a spam message. This new probability is called the posterior probability. 
+word being found in a spam message. This new probability is called the posterior probability.
 
-In the case where a word has appeared once as ham and once as spam, the prior probability is .5, or 50\%. 
+In the case where a word has appeared once as ham and once as spam, the prior probability is .5, or 50\%.
 $$P(W) = .5$$
 The probability of a message being spam is denoted as $P(S)$, and the probability of a message being ham is
 $P(H)$. Both of these are calculated putting all the probability values of all the words in a message into
@@ -163,7 +176,7 @@ spam message, and so on up to the last word in the message.
 \subsection{Non-Linear Classifiers}
 Non-linear classifiers are described as such because they are able to separate points into multiple regions
 rather than only being able to divide a cloud of points into two parts. This is useful when multiple the
-inputs need to be divided into multiple categories. 
+inputs need to be divided into multiple categories.
 \subsection{Others}
 % XXX put something about the others here?
 % This section will cover the range of other statistical classifiers in less detail.
@@ -243,7 +256,7 @@ behavior or by examining a program before execution.
 Existing research has used an n-gram approach similar to the language guessing approach described
 earlier. While this is effective, most malware is transmitted in a compressed format. Unsurprisingly, guessing
 the safety of an executable inside a zip file is just as difficult as guessing the language of a text file
-inside a zip file.  
+inside a zip file.
 
 More recent systems have added the ability to recognize compressed files and decompress them before examining
 them for malicious intent, and have reported success rates up to 87.3\%. \cite{perdisci2008mcboost}
@@ -340,18 +353,18 @@ One of the best ways to inject new results into an over-trained system may be to
 other users who have agreed to share their results.
 \subsection{Ease of Use}
 The current design for the software requires the user to have a transparent proxy configured in the web
-browser.  Many web requests made by a browser will be irrelevant to the software, but will still be captured. 
+browser.  Many web requests made by a browser will be irrelevant to the software, but will still be captured.
 Later iteration of this design would investigate writings plugins specific to Mozilla Firefox or Google Chrome
 in order to only capture relevant content, and in order to simplify setup of the software.
-\pagebreak{} 
-\bibliographystyle{apalike} 
+\pagebreak{}
+\bibliographystyle{apalike}
 \bibliography{statisticallearning}
 \end{document}
 
 % LocalWords: LocalWords differentiable
- 
 
-%%% Local Variables: 
+
+%%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t
-%%% End: 
+%%% End:
