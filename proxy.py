@@ -3,21 +3,16 @@ from twisted.internet import reactor
 from twisted.python import log
 import sys
 import gzip
-import StringIO
+import cStringIO
 
 log.startLogging(sys.stdout)
 
 class MyProxyClient(proxy.ProxyClient):
     def __init__(self,command, rest, version, headers, data, father):
-        self.buf = StringIO.StringIO()
+        self.buf = cStringIO.StringIO()
         self.father = father
         self.command = command
         self.rest = rest
-        headers["Accept-encoding"]= 'text/plain'
-        if "Accept-encoding" in headers:
-            print "found Accept-encoding with value %s" % headers["Accept-encoding"]
-            del headers["Accept-encoding"]
-            headers["Accept-encoding"] = 'text/plain'
         if "proxy-connection" in headers:
             del headers["proxy-connection"]
             headers["connection"] = "close"
@@ -27,6 +22,7 @@ class MyProxyClient(proxy.ProxyClient):
     def handleResponsePart(self,buffer):
         print "buffer is %s" % buffer
         self.buf.write(buffer)
+        self.buf.seek(0,0)
         self.father.write(buffer)
 
     def handleResponseEnd(self):
