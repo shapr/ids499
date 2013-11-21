@@ -14,6 +14,7 @@
 \usepackage{setspace}
 \usepackage[explicit]{titlesec}
 \usepackage[normalem]{ulem}
+\usepackage[round]{natbib} 
 \doublespacing{}
 \pagestyle{fancy}
 \lhead{\footnotesize Outline for IDS499 final project}
@@ -91,7 +92,7 @@ The goal of a classifier is to sort inputs into different categories based on fe
 most familiar examples would be book recommendations from Amazon and movie recommendations from Netflix. Those
 recommendations are done with software that has determined important features of all the books and movies
 available, and has some way to figure out which books or movies are similar to which other books or
-movies. \cite{michie1994machine}
+movies \citep{michie1994machine}.
 
 
 
@@ -102,9 +103,14 @@ Linear classifiers are called linear because, given a set of points drawn in a t
 classifier finds a line that divides the space into two halves where one side of the line is one category, and
 the other side of the line is the other.\\
 % center this? XXX
-\includegraphics[scale=.4,natwidth=628,natheight=600]{svm_separating_hyperplanes.png}\\
+\begin{figure}[center]
+  \centering
+\includegraphics[scale=.4,natwidth=628,natheight=600]{svm_separating_hyperplanes.png}  
+  \caption{Separating Hyperplanes with a Support Vector Machine}
+  %\label{fig:1}
+\end{figure}
 
-The most popular linear classifier is the Naive Bayesian classifier. \cite{kononenko1991semi}
+The most popular linear classifier is the Naive Bayesian classifier \citep{kononenko1991semi}.
 We will describe the use of a Naive Bayesian Classifier for classification of email into so called ham and
 spam messages. Spam is common jargon used to describe unwanted email, most often containing advertising or
 some other attempt to extract money from the recipient of that email. Ham is a lesser known word that
@@ -180,30 +186,30 @@ inputs need to be divided into multiple categories.
 \subsection{Others}
 % XXX put something about the others here?
 % This section will cover the range of other statistical classifiers in less detail.
-The first linear classifiers were described in 1936. \cite{fisher1936use} As mentioned earlier, they could
+The first linear classifiers were described in 1936. \citep{fisher1936use} As mentioned earlier, they could
 only find a single line across a plane to divide many points into two groups.  In 1962, the first research on
 neural networks was published. Each neuron in a neural network was a separate linear classifier, giving them
 the ability to combine multiple separate group divisions into a piece wise linear separation. In the mid 1980s
 the back propagation algorithm was discovered that allowed errors in classification to be propagated backwards
-through the network to change the value for each separate node in the network. \cite{cortes1995support}
+through the network to change the value for each separate node in the network. \citep{cortes1995support}
 \subsection{Support Vector Machines}
 % http://www.youtube.com/watch?v=qyyJKd-zXRE andrew ng's video from the stanford course on machine learning
 Bayesian classifiers are easy to understand both from the mathematical and implementation viewpoints, but are
 less effective than non-linear classifiers. Non-linear classifiers such as neural networks are effective, but
 do not produce knowledge that can be used outside of the neural network.  Support vector machines have the
 great benefit that they are effective for two or many more categories, they are mathematically simple, and the
-result of their training can be extracted and used for other purposes. \cite{hearst1998support} In addition,
+result of their training can be extracted and used for other purposes. \citep{hearst1998support} In addition,
 support vector machines look for the largest margins between groupings of points, and thus automatically
 produce classifiers that can be applied to new inputs as well as determining what features are unique to each
 grouping. Part of the improvement found with support vector machines comes from their use of linear
-classifiers after a non-linear remapping of the data. \cite{cortes1995support}
+classifiers after a non-linear remapping of the data. \citep{cortes1995support}
 
 While earlier classifiers have concentrated on the contributing values for each point of data, the support
 vector machine instead searches for the most widely separated values, as those will most often denote a group
 of data points separate from other groups. This also requires far less computation than other algorithms.
 
 Support vector machines can be equivalent to machine learning done with several other types of classifiers
-such as polynomial classifiers, radial basis functions, and neural networks. \cite{hearst1998support}
+such as polynomial classifiers, radial basis functions, and neural networks. \citep{hearst1998support}
 
 % XXX lots more content could go here
 
@@ -213,7 +219,7 @@ Naive Bayesian spam filtering has had much been the subject of many research pap
 unsurprising that this linear classifier gives decent but not spectacular performance.  Bayesian spam filters
 have been found to require continuous training in order to achieve good results, but have also found to be
 imperfect even after thorough training on large collections of messages. Thus Bayesian spam filters are only
-sufficient when backed up with other approaches.  \cite{androutsopoulos2000evaluation}
+sufficient when backed up with other approaches.  \citep{androutsopoulos2000evaluation}
 \subsection{Natural Language Guessing}
 % This will describe how statistical classifiers are used in guessing the natural language used in a document.
 If you've navigated your web browser to a web page written in a language other than your native language,
@@ -225,7 +231,7 @@ language guessing software now looks for particular sequences of letters called 
 contiguous string of characters of length n. This works well on short snippets of text that may not exhibit
 any words or characters unique to the language used, and is fast and easy to implement. This also gives this
 approach a tolerance to errors in spelling or grammar. Unsurprisingly, this approach cannot differentiate
-between very similar languages such as American English and British English. \cite{martins2005language}
+between very similar languages such as American English and British English. \citep{martins2005language}
 \subsection{Sentiment Classification}
 While most of machine learning focuses on categorization by topic, there are other interesting uses for these
 algorithms.  Sentiment classification is used to attempt to extract the emotional content for a particular
@@ -234,7 +240,7 @@ election to attempting to predict the relative market share of different mobile 
 
 This kind of classification is especially interesting to web sites that aggregate information from other
 websites. One good example is the movie reviews from the website \url{rottentomatoes.com}, which attempts to
-give an average rating to a movie by combining many reviews written by other people. \cite{pang2002thumbs}
+give an average rating to a movie by combining many reviews written by other people. \citep{pang2002thumbs}
 
 While many features of documents can be easily extracted, emotional content is often subtle. A sentence as
 simple as ``How could you think that?'' has no explicitly emotional words, but is obviously a negative
@@ -259,10 +265,10 @@ the safety of an executable inside a zip file is just as difficult as guessing t
 inside a zip file.
 
 More recent systems have added the ability to recognize compressed files and decompress them before examining
-them for malicious intent, and have reported success rates up to 87.3\%. \cite{perdisci2008mcboost}
+them for malicious intent, and have reported success rates up to 87.3\%. \citep{perdisci2008mcboost}
 \subsection{Movie and Book Recommendations}
-This will describe how statistical classifiers are used to recommend movies \cite{basu1998recommendation} and
-books \cite{linden2003amazon} based on the movies or books previously enjoyed by a user.
+This will describe how statistical classifiers are used to recommend movies \citep{basu1998recommendation} and
+books \citep{linden2003amazon} based on the movies or books previously enjoyed by a user.
 
 Amazon.com has an unusual problem in that they have a very large number of products, and a varying amount of
 data for each user. New customers will have a very few purchases on their account, while long time customers
@@ -288,7 +294,7 @@ many thousands of purchases.
 \subsection{Google Prediction API}
 Google has written large pieces of software designed to predict other items of interest to a particular
 user. They allow the public to use this software as well. Small amounts of use is free, and a large amount of
-use unsurprisingly costs money. \cite{GooglePrediction:2013:Online}
+use unsurprisingly costs money. \citep{GooglePrediction:2013:Online}
 
 The Google Prediction API explicitly lists such feature as
 \begin{itemize}
@@ -304,7 +310,7 @@ the most cost-effective way to calculate recommendations on a large scale.
 For personal use on a user's computer, the open source Natural Language Tool Kit handles many tasks involved
 in automated processing of natural language, and also provides a book that describes how to use NLTK for
 common natural language tasks. This library is most likely the easiest way to implement the prototype
-software. \cite{NLTK:2013:Online}
+software. \citep{NLTK:2013:Online}
 \section{Proposed Software}
 \subsection{Transparent Proxy}
 The transparent proxy will run on the local machine and will capture all web pages read by the user. Each web
