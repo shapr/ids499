@@ -4,6 +4,7 @@ from twisted.python import log
 import sys
 import gzip
 import cStringIO
+from BeautifulSoup import BeautifulSoup
 
 log.startLogging(sys.stdout)
 
@@ -20,7 +21,7 @@ class MyProxyClient(proxy.ProxyClient):
             self.headers = headers
             self.data = data
     def handleResponsePart(self,buffer):
-        print "buffer is %s" % buffer
+        #print "buffer is %s" % buffer
         self.buf.write(buffer)
         self.buf.seek(0,0)
         self.father.write(buffer)
@@ -31,7 +32,9 @@ class MyProxyClient(proxy.ProxyClient):
             self.father.finish()
             g = gzip.GzipFile(mode="rb",fileobj=self.buf)
             rawtext = g.read()
-            print "rawtext is %s" % rawtext
+            soup = BeautifulSoup(rawtext)
+            print "soup text is ",soup.getText(separator=u' ')
+            #print "rawtext is %s" % rawtext
             self.transport.loseConnection()
 
 class MyProxyClientFactory(proxy.ProxyClientFactory):
