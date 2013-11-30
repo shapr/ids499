@@ -11,18 +11,19 @@
 \usepackage{color}
 \usepackage{fancyhdr}
 \usepackage{setspace}
-\usepackage{setspace}
 \usepackage[explicit]{titlesec}
 \usepackage[normalem]{ulem}
 \usepackage[round]{natbib} 
 \doublespacing{}
-\pagestyle{fancy}
-\lhead{\footnotesize Outline for IDS499 final project}
-\rhead{\footnotesize October 12 2013 -- IDS499 -- Shae Erisson}
+\pagestyle{fancyplain}
+%\lhead{\footnotesize Statistical Learning}
+%\rhead{\footnotesize October 12 2013 -- IDS499 -- Shae Erisson}
+\rhead{\footnotesize Statistical Learning \thepage}
 
-\author{Shae Matijs Erisson\\Interdisciplinary Studies Department\\University of North Alabama}
+\author{Shae Matijs Erisson\\Interdisciplinary Studies Department\\University of North Alabama\\For
+  C. Robertson\\IDS 499}
 \title{Statistical Learning for User-Specific Webpage Recommendations}
-\date{October 12 2013}
+\date{November 30 2013}
 
 %% trying to get sections to not be numbered
 \setcounter{secnumdepth}{0} % this actually works!
@@ -38,42 +39,42 @@
 
 \begin{document}
 \maketitle{}
-\pagebreak{}
 %\section*{Statistical Learning for User-Specific Webpage Recommendations}
-
+\pagebreak{}
+\tableofcontents{}
+\pagebreak{}
 \begin{abstract}
   This paper and its associated software will explore the use of statistical learning to find previously
   unknown webpages of interest to the user of the software.
 
-  We focus on the use of support vector machines to do supervised learning that results in efficient
-  categorization of web pages into interesting or uninteresting.
+  This work focuses on the use of support vector machines to do supervised learning that results in efficient
+  categorization of web pages into interesting or uninteresting categories.
 
   We also present a prototype web-based tool that allows the user to train their own nonlinear statistical
   classifier to find web pages specific to a particular subject of interest.
 \end{abstract}
-\pagebreak{}
-\tableofcontents{}
+
 \pagebreak{}
 \section{Introduction}
 Can statistical classifiers be used to expand rather than filter knowledge?
 
 Much time is spent trying to find relevant web sites when doing research for any number of tasks. While those
 helpful websites exist for almost any subject, it can be difficult to find which website is best for a
-particular topic.
-
-While searching Google can be fun, sometimes too much time is spent trying to find relevant information, or
-irrelevant search results become distrating from the actual
-
+particular topic. While searching Google can be fun, sometimes too much time is spent trying to find relevant
+information, or irrelevant search results become distrating from the actual
 Up to now statistical classifiers such as Bayesian statistics have primarily been used to automatically
 categorize items based on a user's feedback. In fact, this is how most spam filters function. Since each
 person will consider different messages to be useful content, and so each person must give their own feedback
-to the filter.
-
-Services such as Netflix and Amazon use similar software to suggest movies or books according to which movies
-or books the user has already enjoyed.
+to the filter. Services such as Netflix and Amazon use similar software to suggest movies or books according
+to which movies or books the user has already enjoyed.
 
 The research problem we address here is whether this can be generalized to recommending webpages to the user
-according to which webpages they've found relevant in the past.
+according to which webpages they've found relevant in the past. More specifically, this project will operate
+as a transparent web proxy that saves the text of each web page the user browses. It will use those words to
+perform its own web searches, and attempt to find search results that it will then present to the user. The
+user can click on a thumbs up or a thumbs down icon to give positive or negative feedback to the search
+results found. This input will be used to increase or decrease the significance of the search terms used, and
+thus find search results tuned to the user's interest.
 \section{Justification for the Study}
 Statistical learning has been used to filter spam for decades. In that specific case, the filtering works by
 increasing or decreasing the score of a particular message by summing the score of each word in the contents.
@@ -85,6 +86,7 @@ existing content. The project consists of both prototype software and a report d
 
 % The software will watch the user browsing the web and uses that input to build Bayesian statistics for later
 % searching for new documents of interest.
+% \pagebreak{}
 \section{Statistical Classifiers}
 % This section will give an overview of statistical classifiers.
 
@@ -105,8 +107,8 @@ the other side of the line is the other.\\
 % center this? XXX
 \begin{figure}[center]
   \centering
-\includegraphics[scale=.4,natwidth=628,natheight=600]{svm_separating_hyperplanes.png}  
-  \caption{Separating Hyperplanes with a Support Vector Machine}
+\includegraphics[scale=.4,natwidth=720,natheight=540]{svm_separating_hyperplanes.png}  
+  \caption{Linear separation of a scatterplot}
   %\label{fig:1}
 \end{figure}
 
@@ -114,7 +116,8 @@ The most popular linear classifier is the Naive Bayesian classifier \citep{konon
 We will describe the use of a Naive Bayesian Classifier for classification of email into so called ham and
 spam messages. Spam is common jargon used to describe unwanted email, most often containing advertising or
 some other attempt to extract money from the recipient of that email. Ham is a lesser known word that
-describes a message that has actual content that the user wishes to receive.
+describes a message that has actual content that the user wishes to receive \citep{nelson2008exploiting}.
+
 
 In summary, each word in an email has a particular positive or negative value associated with it from earlier
 training. These values are added together, and the resulting sum is compared against user-specified
@@ -138,12 +141,13 @@ appeared once in a ham message, once in a spam message, and then user input tell
 appeared once again in a spam message?
 
 The Reverend Thomas Bayes was both a Presbyterian minister and a mathematician, and his research into what was
-then called inverse probability became Bayes theorem. The idea of inverse probability started out with the
-question: given an urn containing a certain number of black and white balls, what is the probability of
-drawing one particular color of ball? Then, once a ball of a black or white ball has been removed, what is the
-new probability of drawing out a ball of a particular color? This sort of question applies directly to the
-spam classification problem, since it requires that we calculate the probability that a word will be in a spam
-message based on a combination of the number of times it has been found in spam and ham messages.
+then called inverse probability became Bayes theorem \citep{barnard1958studies}. The idea of inverse
+probability started out with the question: given an urn containing a certain number of black and white balls,
+what is the probability of drawing one particular color of ball? Then, once a ball of a black or white ball
+has been removed, what is the new probability of drawing out a ball of a particular color? This sort of
+question applies directly to the spam classification problem, since it requires that we calculate the
+probability that a word will be in a spam message based on a combination of the number of times it has been
+found in spam and ham messages.
 
 % http://en.wikipedia.org/wiki/Bayes'_theorem#Events
 $$P(A|B)= \dfrac{P(B|A)P(A)}{P(B)}$$
@@ -152,7 +156,8 @@ $$P(A|B)= \dfrac{P(B|A)P(A)}{P(B)}$$
 % denote the probability that a word will be found in a ham message. $P(B|A)$, or
 This form of Bayes' Theorem requires that we know the prior probability that a word will be in a spam
 message, and given a fixed event such as a word being marked spam, will give us the new probability of that
-word being found in a spam message. This new probability is called the posterior probability.
+word being found in a spam message. This new probability is called the posterior probability
+\citep{bernardo1979reference}.
 
 In the case where a word has appeared once as ham and once as spam, the prior probability is .5, or 50\%.
 $$P(W) = .5$$
@@ -183,6 +188,13 @@ spam message, and so on up to the last word in the message.
 Non-linear classifiers are described as such because they are able to separate points into multiple regions
 rather than only being able to divide a cloud of points into two parts. This is useful when multiple the
 inputs need to be divided into multiple categories.
+\begin{figure}[center]
+  \centering
+\includegraphics[scale=.4,natwidth=628,natheight=600]{svm_separating_hyperplanes.png}  
+  \caption{Non-linear Separation with a Support Vector Machine}
+  %\label{fig:1}
+\end{figure}
+
 \subsection{Others}
 % XXX put something about the others here?
 % This section will cover the range of other statistical classifiers in less detail.
@@ -222,8 +234,8 @@ imperfect even after thorough training on large collections of messages. Thus Ba
 sufficient when backed up with other approaches.  \citep{androutsopoulos2000evaluation}
 \subsection{Natural Language Guessing}
 % This will describe how statistical classifiers are used in guessing the natural language used in a document.
-If you've navigated your web browser to a web page written in a language other than your native language,
-you've probably seen a small popup offer to translate from the language of the web page into your native
+When a user navigates their web browser to a web page written in a language other than your native language,
+they might see a small popup offer to translate from the language of the web page into your native
 language. But how can computers discover the language of the document without asking the user?
 
 Originally, software looked for characters or words that are unique to a particular language, but effective
