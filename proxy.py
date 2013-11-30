@@ -10,6 +10,7 @@ log.startLogging(sys.stdout)
 
 class MyProxyClient(proxy.ProxyClient):
     def __init__(self,command, rest, version, headers, data, father):
+        self.grabit = False
         self.buf = cStringIO.StringIO()
         self.father = father
         self.command = command
@@ -20,6 +21,13 @@ class MyProxyClient(proxy.ProxyClient):
             headers.pop('keep-alive', None)
             self.headers = headers
             self.data = data
+    # def handleHeader(self,key,value):
+    #     if key == 'Content-Type':
+    #         print "got a Content-Type"
+    #         if value.startswith('text'):
+    #             print "yes, we can grab text out of this one!"
+    #             self.grabit = True
+    #     proxy.ProxyClient.handleHeader(key,value)
     def handleResponsePart(self,buffer):
         #print "buffer is %s" % buffer
         self.buf.write(buffer)
@@ -27,15 +35,29 @@ class MyProxyClient(proxy.ProxyClient):
         self.father.write(buffer)
 
     def handleResponseEnd(self):
+        """2013-11-30 16:29:31-0600 [MyProxyClient,client] headers are Headers({'content-length': ['253'], 
+        'content-encoding': ['gzip'], 'vary': ['Accept-Encoding'], 
+        'server': ['Yaws/1.84 Yet Another Web Server'], 'connection': ['close'], 
+        'date': ['Sat, 30 Nov 2013 22:43:56 GMT'], 'content-type': ['text/html']})"""
         if not self._finished:
             self._finished = True
             self.father.finish()
-            g = gzip.GzipFile(mode="rb",fileobj=self.buf)
-            rawtext = g.read()
-            soup = BeautifulSoup(rawtext)
-            print "soup text is ",soup.getText(separator=u' ')
-            #print "rawtext is %s" % rawtext
-            self.transport.loseConnection()
+            #print "headers are",self.father.responseHeaders
+            for h in self.father.responseHeaders:
+                if (h.key.lower() == 'content-type') and h.value.startswith('text'):
+                    self.grabit = True
+                if (h.key.lower() == 'content-encoding' and h.value == 'gzip':
+                    self.gunzipit = True
+        if self.gunzipit:
+            try:
+                g = gzip.GzipFile(mode="rb",fileobj=self.buf)
+                rawtext = g.read()
+            except IOError:
+                rawtext=self.buf.read() # might work, why not?
+        soup = BeautifulSoup(rawtext)
+        #print "soup text is ",soup.getText(separator=u' ')
+        #print "rawtext is %s" % rawtext
+        self.transport.loseConnection()
 
 class MyProxyClientFactory(proxy.ProxyClientFactory):
     protocol = MyProxyClient
