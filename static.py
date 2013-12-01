@@ -11,9 +11,9 @@ class Simple(Resource):
         bottom = "</table>"
         content = top
         for x in somelist:
-            content += "<tr><td>%s</td></tr>" % x
+            content += '<tr><td><embed src="thumbs_up.svg" type="image/svg+xml" /></td><td><embed src="thumbs_down.svg" type="image/svg+xml"/><td>%s</td></tr>' % x
         content += bottom
-        return ("<html>dang it, world! %s</html>" % content) 
+        return ("<html>dang it, world! %s</html>" % content)
 
 resource = Simple()
 site = Site(resource)
