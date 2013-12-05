@@ -15,6 +15,7 @@
 \usepackage[explicit]{titlesec}
 \usepackage[normalem]{ulem}
 \usepackage[round]{natbib} 
+\usepackage{tocbibind} 
 \doublespacing{}
 \pagestyle{fancyplain}
 %\lhead{\footnotesize Statistical Learning}
@@ -29,6 +30,8 @@
 %% trying to get sections to not be numbered
 \setcounter{secnumdepth}{0} % this actually works!
 
+%trying to get Table of Contents instead of Contents
+\renewcommand*\contentsname{Table of Contents} 
 %% trying to get subsections to be underlined, it works!
 \titleformat{\subsection}
   {\normalfont\Large\sffamily\bfseries\filcenter}{}{0em}{\uline{\thesection}}
