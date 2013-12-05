@@ -6,6 +6,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{indentfirst}
 \usepackage{amsthm}
 \usepackage[margin=1in]{geometry}
 \usepackage{color}
@@ -39,9 +40,8 @@
 
 \begin{document}
 \maketitle{}
-%\section*{Statistical Learning for User-Specific Webpage Recommendations}
 \pagebreak{}
-\tableofcontents{}
+\tableofcontents
 \pagebreak{}
 \begin{abstract}
   This paper and its associated software will explore the use of statistical learning to find previously
@@ -102,8 +102,7 @@ Statistical classifiers are divided into two major types, linear classifiers and
 \subsection{Linear Classifiers}
 %This section will describe the simplest instance of linear statistical classifiers, Naive Bayesian
 Linear classifiers are called linear because, given a set of points drawn in a two dimensional space, the
-classifier finds a line that divides the space into two halves where one side of the line is one category, and
-the other side of the line is the other.\\
+classifier finds a line that divides the points in space into two categories.\\
 % center this? XXX
 \begin{figure}[center]
   \centering
@@ -126,7 +125,7 @@ the user. If the value is less than the spam threshold, the message is considere
 folder on the user's email system.
 
 Obviously when a user is first added to an email system, they cannot have given any input to the system, and
-thus the training values are empty, and all messages are considered ham. The most popular user interface
+thus the training values are empty and all messages are considered ham. The most popular user interface
 approach is to add a button that allows a user to classify any message as spam. When that happens for the very
 first time, the software changes the values of all the words in the message to a negative value. After that
 very first input of training data, any message that contains words that were found in the spam message will be
@@ -154,15 +153,15 @@ $$P(A|B)= \dfrac{P(B|A)P(A)}{P(B)}$$
 
 % We shall use $P(S)$ to denote the probability that a word will be found in a spam message, and $P(H)$ to
 % denote the probability that a word will be found in a ham message. $P(B|A)$, or
-This form of Bayes' Theorem requires that we know the prior probability that a word will be in a spam
-message, and given a fixed event such as a word being marked spam, will give us the new probability of that
-word being found in a spam message. This new probability is called the posterior probability
+This form of Bayes' Theorem requires that we know the prior probability that a word will be in a spam message,
+and given a fixed event (such as a word being marked spam) Bayes' Theorem gives us the new probability of that
+word being found in a spam message. This new probability is called the posterior probability.
 \citep{bernardo1979reference}.
 
 In the case where a word has appeared once as ham and once as spam, the prior probability is .5, or 50\%.
 $$P(W) = .5$$
 The probability of a message being spam is denoted as $P(S)$, and the probability of a message being ham is
-$P(H)$. Both of these are calculated putting all the probability values of all the words in a message into
+$P(H)$. Both of these are calculated putting by all the probability values of all the words in a message into
 Bayes' Theorem.
 
 In probability, the likelihood of one event $B$ happening after an event $A$ has happened is denoted as
@@ -279,8 +278,8 @@ inside a zip file.
 More recent systems have added the ability to recognize compressed files and decompress them before examining
 them for malicious intent, and have reported success rates up to 87.3\%. \citep{perdisci2008mcboost}
 \subsection{Movie and Book Recommendations}
-This will describe how statistical classifiers are used to recommend movies \citep{basu1998recommendation} and
-books \citep{linden2003amazon} based on the movies or books previously enjoyed by a user.
+Statistical classifiers are used to recommend movies \citep{basu1998recommendation} and books
+\citep{linden2003amazon} based on the movies or books previously enjoyed by a user.
 
 Amazon.com has an unusual problem in that they have a very large number of products, and a varying amount of
 data for each user. New customers will have a very few purchases on their account, while long time customers
@@ -303,6 +302,9 @@ many thousands of purchases.
 
 % XXX could puff up this section easily
 \section{Existing Tools}
+This author has chosen Python as the implementation language used. Thus the tools below are either available
+for Python or easily accessible from Python. Several machine learning libraries are available for Python, some
+of which are discussed below.
 \subsection{Google Prediction API}
 Google has written large pieces of software designed to predict other items of interest to a particular
 user. They allow the public to use this software as well. Small amounts of use is free, and a large amount of
@@ -321,20 +323,39 @@ the most cost-effective way to calculate recommendations on a large scale.
 \subsection{NLTK}
 For personal use on a user's computer, the open source Natural Language Tool Kit handles many tasks involved
 in automated processing of natural language, and also provides a book that describes how to use NLTK for
-common natural language tasks. This library is most likely the easiest way to implement the prototype
-software. \citep{NLTK:2013:Online}
+common natural language tasks. \citep{NLTK:2013:Online}
+\subsection{PyML}
+% XXX write more about this
+The PyML library is a machine learning library for Python. The author chose this library for the prototype. It
+had the fewest dependencies of all the Python libraries discovered, and was thus easiest to setup and use. It
+wraps a fast support vector machine library written in C, and is thus fast and efficient.
+\subsection{SciKit-Learn}
+The SciKit-Learn project builds on Python's excellent Numeric Python and Scientific Python libraries. It
+includes all of the algorithms previously discussed and is worth investigating for later version of this
+software. One benefit of the SciKit-Learn library is that it may be significantly easier to tune the support
+vector machine if this library were used.
 \section{Proposed Software}
+The core of this tool is the statistical classifier. As soon as the text of at least two web pages has been
+captured, the classifier has enough information to start independently assisting the user.
 \subsection{Transparent Proxy}
-The transparent proxy will run on the local machine and will capture all web pages read by the user. Each web
-page will be divided up into unique words found in the page, and a default score of zero relevance will be
-given to each word found.
+The transparent proxy runs on the local machine and captures all web pages read by the user. Each web
+page is divided up into unique words found in the page and the count of each word in each web page.
+In the absence of user feedback, the most common words in the captured traffic are used to start the
+searches. Once a number of search results are available, the software waits for user feedback.
+The user will need to configure their web browser to send all traffic to the proxy server. While this is
+inconvenient, it only needs to be done once.
 \subsection{Statistical Classifier}
 As described earlier, the software will be using a support vector machine to find the most specific
-classification for each search term discovered by the transparent proxy.
+classification for each search term discovered by the transparent proxy. The count of the words found in each
+document is converted into a vector. This vector is then fed into the support vector machine for
+training. User feedback will boost the scores of particular words by clicking the thumbs up or thumbs down
+icon on the feedback page.
 \subsection{Predictive Model}
-This will describe how the classifier can be used to find new and interesting results for the user.
+Once the support vector machine has both captured traffic and user feedback, the classifier has some ability
+to separate documents into the categories of interesting and non-interesting. At that point, the documents
+with the highest scores are presented to the user through the feedback interface.
 \subsection{User Interface}
-The user will have a small web server running locally and be able to navigate to the suggestions interface
+The user will have a small web server running locally and be able to navigate to the feedback interface
 running on this local web server. The user will examine recommended web pages and give them a thumbs up or a
 thumbs down depending on their perceived relevance. The thumbs up button will reinforce the search terms used
 to discover this web page, and the thumbs down button will discourage the search terms used to discover the
@@ -349,8 +370,30 @@ benefit from this sort of background agent doing the hard work required to find 
 If a user has a large collection of research papers and would like to pick out which papers may be relevant to
 their current interests, the software could discover this. Even better, the software could be pointed at a
 large online repository of research papers such as JSTOR and instead pick out papers that may be surprisingly
-relevant to the user's research.
+relevant to the user's research. Similarly, if the software has been trained on a corpus of research papers,
+a plugin for searching sites specific to researchers could be written.
+\section{Conclusion}
+The prototype built for this paper shows promise. While the results were not always on target, some good
+results were found. One benefit of using a support vector machine over other statistical classifiers is that
+the entire input can be used without filtering. The downside is that the error tolerance parameter must be
+tuned correctly.
+\begin{figure}[center]
+  \centering
+  \includegraphics[scale=.6,natwidth=751,natheight=272]{feedbackinterface.png}
+  \caption{Feedback interface for the prototype}
+\end{figure}
 \section{Future Directions}
+While this prototype does recommend documents according to user feedback, several items could be
+improved. First, there is no user interface to tune the error tolerance of the support vector machine. Even if
+such functionality were implemented, only users who are familiar with both machine learning and support vector
+machines would have some idea of how to tune this parameter to improve their results. Further researching into
+tuning of support vector machines for this particular purpose may come up with a range of error tolerance
+values that work best for this particular task.
+
+In the current version of the software, the type of file is used to filter out irrelevant content such as
+style sheets or JavaScript. Because of the fact that not all web servers are configured to correctly send the
+type of file along with the file, this does not always work correctly, and this prototype loses some relevant
+content.
 \subsection{Overfocus Prevention}
 One of the problems with statistical classifiers is that they can be over trained and end up limiting the
 results, thus missing results the user may not yet know they wish to see.  This section describes several
@@ -368,15 +411,22 @@ search results will be entirely different a year later.  Thus, the system must h
 the oldest training values. This feature will also help prevent stagnation of the training values.
 \subsection{Multiuser}
 One of the best ways to inject new results into an over-trained system may be to import the best results from
-other users who have agreed to share their results.
+other users who have agreed to share their results. A later iteration of this project could have some way to
+retrieve results from other users of the same software that have similar important words in their
+results. This would prevent over-training and spread the load of finding useful results as well.
+
+Equally useful would be multi-user functionality tuned to share the training load across a company or
+business group, perhaps even a research group at a university. For this functionality, the proxy would be
+located on a server used by the employees involved, and the results would be combined for all users into a
+search assistant tuned for that group.
 \subsection{Ease of Use}
 The current design for the software requires the user to have a transparent proxy configured in the web
 browser.  Many web requests made by a browser will be irrelevant to the software, but will still be captured.
-Later iteration of this design would investigate writings plugins specific to Mozilla Firefox or Google Chrome
+Later iterations of this design would investigate writing plugins specific to Mozilla Firefox or Google Chrome
 in order to only capture relevant content, and in order to simplify setup of the software.
+
 \pagebreak{}
-\bibliographystyle{apalike}
-\bibliography{statisticallearning}
+\bibliographystyle{apalike} \bibliography{statisticallearning}
 \end{document}
 
 % LocalWords: LocalWords differentiable
